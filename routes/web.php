@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\LoanController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/health-check', function () {
     return response()->json([
@@ -12,10 +12,17 @@ Route::get('/health-check', function () {
     ]);
 })->name('health-check');
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [LandingPageController::class, 'index'])->name('landing');
+
+// Auth routes placeholder - these will work with existing Breeze/auth system
+Route::view('/login', 'auth.login')->name('login');
+Route::view('/register/student', 'auth.register-student')->name('register.student');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::view('dashboard', 'dashboard.index')->name('dashboard');
+    Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment.index');
+    Route::get('loans/create', [LoanController::class, 'create'])->name('loans.create');
+    Route::post('loans', [LoanController::class, 'store'])->name('loans.store');
 });
 
 require __DIR__.'/settings.php';
